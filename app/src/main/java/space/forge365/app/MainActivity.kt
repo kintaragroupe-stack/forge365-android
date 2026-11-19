@@ -75,7 +75,19 @@ class MainActivity : AppCompatActivity() {
         if (ok.isEmpty()) p.deny() else p.grant(ok.toTypedArray())
     }
 
-    private val droitsVisio = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { }
+    /** salle demandée par la page, ouverte seulement après la réponse aux autorisations (micro, caméra, notifications) */
+    private var visioEnAttente: String? = null
+
+    private val droitsVisio = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+        val json = visioEnAttente ?: return@registerForActivityResult
+        visioEnAttente = null
+        lancerVisio(json)
+    }
+
+    private fun lancerVisio(json: String) {
+        val ok = try { Visio.ouvrir(this, json) } catch (e: Exception) { false }
+        if (!ok) Toast.makeText(this, R.string.visio_impossible, Toast.LENGTH_LONG).show()
+    }
 
     /** fin de la réunion native : la page de la salle est prévenue */
     private val finVisio = object : BroadcastReceiver() {
@@ -175,9 +187,13 @@ class MainActivity : AppCompatActivity() {
                 if (!aLeDroit(Manifest.permission.RECORD_AUDIO)) manque += Manifest.permission.RECORD_AUDIO
                 if (!aLeDroit(Manifest.permission.CAMERA)) manque += Manifest.permission.CAMERA
                 if (Build.VERSION.SDK_INT >= 33 && !aLeDroit(Manifest.permission.POST_NOTIFICATIONS)) manque += Manifest.permission.POST_NOTIFICATIONS
-                if (manque.isNotEmpty()) droitsVisio.launch(manque.toTypedArray())
-                val ok = try { Visio.ouvrir(this@MainActivity, json) } catch (e: Exception) { false }
-                if (!ok) Toast.makeText(this@MainActivity, R.string.visio_impossible, Toast.LENGTH_LONG).show()
+                if (manque.isEmpty()) {
+                    lancerVisio(json)
+                } else {
+                    // d'abord les autorisations, ensuite la salle : sinon la visio démarre sans micro ni caméra
+                    visioEnAttente = json
+                    droitsVisio.launch(manque.toTypedArray())
+                }
             }
         }
 

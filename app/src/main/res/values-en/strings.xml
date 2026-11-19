@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FORGE 365</string>
+    <string name="hors_ligne_titre">No connection</string>
+    <string name="hors_ligne_texte">Check your internet connection, then try again.</string>
+    <string name="reessayer">Try again</string>
+    <string name="visio_impossible">The video meeting could not open. Please try again in a moment.</string>
+    <string name="telechargement">Downloading…</string>
+    <string name="choisir_fichier">Choose a file</string>
+    <string name="aucune_appli">No app can open this link.</string>
+</resources>

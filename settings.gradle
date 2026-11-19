@@ -1,0 +1,18 @@
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+dependencyResolutionManagement {
+    repositories {
+        // SDK Jitsi Meet (visio native) : dépôt officiel de Jitsi
+        maven { url "https://github.com/jitsi/jitsi-maven-repository/raw/master/releases" }
+        google()
+        mavenCentral()
+        maven { url "https://www.jitpack.io" }
+    }
+}
+rootProject.name = "FORGE365"
+include ':app'

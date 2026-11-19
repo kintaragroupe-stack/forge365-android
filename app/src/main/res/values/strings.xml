@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FORGE 365</string>
+    <string name="hors_ligne_titre">Pas de connexion</string>
+    <string name="hors_ligne_texte">Vérifiez votre connexion internet, puis réessayez.</string>
+    <string name="reessayer">Réessayer</string>
+    <string name="visio_impossible">La visio n’a pas pu s’ouvrir. Réessayez dans un instant.</string>
+    <string name="telechargement">Téléchargement en cours…</string>
+    <string name="choisir_fichier">Choisir un fichier</string>
+    <string name="aucune_appli">Aucune application ne peut ouvrir ce lien.</string>
+</resources>

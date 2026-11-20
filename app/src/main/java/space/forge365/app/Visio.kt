@@ -1,6 +1,7 @@
 package space.forge365.app
 
 import android.content.Context
+import android.os.Bundle
 import org.jitsi.meet.sdk.JitsiMeetActivity
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
 import org.jitsi.meet.sdk.JitsiMeetUserInfo
@@ -63,6 +64,10 @@ object Visio {
             .setConfigOverride("channelLastN", 6)
             .setConfigOverride("disableAudioLevels", true)
             .setConfigOverride("enableLayerSuspension", true)
+            // pas de liaison directe téléphone ↔ ordinateur (P2P) : le serveur visio n'a pas de relais TURN, et sur les
+            // réseaux mobiles la liaison directe échoue souvent ou passe mal (attente, image qui traîne, surtout en partage
+            // d'écran). Tout passe par le serveur visio, comme à 3 personnes et plus.
+            .setConfigOverride("p2p", Bundle().apply { putBoolean("enabled", false) })
             .build()
 
         JitsiMeetActivity.launch(context, options)

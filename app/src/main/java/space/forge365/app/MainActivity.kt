@@ -42,6 +42,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.jitsi.meet.sdk.BroadcastEvent
+import org.jitsi.meet.sdk.BroadcastIntentHelper
 
 /**
  * FORGE 365 : tout le site dans l'appli (connexion par cookies : le membre se connecte lui-même sur /connexion/).
@@ -227,6 +228,15 @@ class MainActivity : AppCompatActivity() {
                     visioEnAttente = json
                     droitsVisio.launch(manque.toTypedArray())
                 }
+            }
+        }
+
+        /** séance terminée sur le site (fin pour tout le monde) : la visio native se ferme aussi */
+        @JavascriptInterface
+        fun raccrocher() {
+            runOnUiThread {
+                if (!estForge(Uri.parse(web.url ?: ""))) return@runOnUiThread
+                LocalBroadcastManager.getInstance(this@MainActivity).sendBroadcast(BroadcastIntentHelper.buildHangUpIntent())
             }
         }
 

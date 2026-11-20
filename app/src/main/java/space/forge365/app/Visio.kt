@@ -57,6 +57,12 @@ object Visio {
             .setConfigOverride("readOnlyName", true)
             .setConfigOverride("disableInviteFunctions", true)
             .setConfigOverride("disableDeepLinking", true)
+            // téléphone allégé (surtout pendant un partage de tout l'écran, qui occupe déjà beaucoup le téléphone) :
+            // caméra envoyée en 360p, au plus 6 vidéos reçues (les personnes qui parlent), pas de calcul du niveau sonore
+            .setConfigOverride("resolution", 360)
+            .setConfigOverride("channelLastN", 6)
+            .setConfigOverride("disableAudioLevels", true)
+            .setConfigOverride("enableLayerSuspension", true)
             .build()
 
         JitsiMeetActivity.launch(context, options)

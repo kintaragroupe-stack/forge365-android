@@ -88,7 +88,10 @@ class MainActivity : AppCompatActivity() {
         lancerVisio(json)
     }
 
+    private var finSignalee = false
+
     private fun lancerVisio(json: String) {
+        finSignalee = false
         val ok = try { Visio.ouvrir(this, json) } catch (e: Exception) { false }
         if (!ok) { Toast.makeText(this, R.string.visio_impossible, Toast.LENGTH_LONG).show(); return }
         // salle de l'hôte : alerte par-dessus la réunion quand un invité attend à la porte
@@ -100,6 +103,9 @@ class MainActivity : AppCompatActivity() {
     private val finVisio = object : BroadcastReceiver() {
         override fun onReceive(c: Context?, i: Intent?) {
             Attente.arreter(this@MainActivity)
+            // la fin arrive deux fois (fin de conférence + fermeture) : la page n'est prévenue qu'une fois
+            if (finSignalee) return
+            finSignalee = true
             web.evaluateJavascript("window.dispatchEvent(new Event('f365e-app-fin'))", null)
         }
     }

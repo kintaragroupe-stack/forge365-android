@@ -68,6 +68,12 @@ object Visio {
             // réseaux mobiles la liaison directe échoue souvent ou passe mal (attente, image qui traîne, surtout en partage
             // d'écran). Tout passe par le serveur visio, comme à 3 personnes et plus.
             .setConfigOverride("p2p", Bundle().apply { putBoolean("enabled", false) })
+            // compression vidéo par la puce du téléphone (H264, matérielle) plutôt que par le processeur (VP8, logicielle) :
+            // le partage de tout l'écran ne fait plus ramer le téléphone. Repli sur VP8 si un participant ne lit pas H264.
+            .setConfigOverride("videoQuality", Bundle().apply {
+                putString("mobileScreenshareCodec", "H264")
+                putStringArray("mobileCodecPreferenceOrder", arrayOf("H264", "VP8", "VP9"))
+            })
             .build()
 
         JitsiMeetActivity.launch(context, options)

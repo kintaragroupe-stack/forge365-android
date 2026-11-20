@@ -8,4 +8,9 @@
     <string name="telechargement">Téléchargement en cours…</string>
     <string name="choisir_fichier">Choisir un fichier</string>
     <string name="aucune_appli">Aucune application ne peut ouvrir ce lien.</string>
+    <string name="attente_canal">Salle d’attente de la visio</string>
+    <string name="attente_titre">%1$s attend à la porte</string>
+    <string name="attente_texte">Faites-le entrer dans votre réunion.</string>
+    <string name="attente_entrer">Faire entrer</string>
+    <string name="attente_refuser">Refuser</string>
 </resources>

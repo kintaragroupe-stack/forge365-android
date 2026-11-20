@@ -8,4 +8,9 @@
     <string name="telechargement">Downloading…</string>
     <string name="choisir_fichier">Choose a file</string>
     <string name="aucune_appli">No app can open this link.</string>
+    <string name="attente_canal">Video meeting waiting room</string>
+    <string name="attente_titre">%1$s is waiting at the door</string>
+    <string name="attente_texte">Let them into your meeting.</string>
+    <string name="attente_entrer">Let in</string>
+    <string name="attente_refuser">Decline</string>
 </resources>

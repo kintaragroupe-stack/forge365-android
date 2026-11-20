@@ -89,13 +89,27 @@ class MainActivity : AppCompatActivity() {
 
     private fun lancerVisio(json: String) {
         val ok = try { Visio.ouvrir(this, json) } catch (e: Exception) { false }
-        if (!ok) Toast.makeText(this, R.string.visio_impossible, Toast.LENGTH_LONG).show()
+        if (!ok) { Toast.makeText(this, R.string.visio_impossible, Toast.LENGTH_LONG).show(); return }
+        // salle de l'hôte : alerte par-dessus la réunion quand un invité attend à la porte
+        val attente = try { org.json.JSONObject(json).optString("attente") } catch (e: Exception) { "" }
+        if (attente.isNotBlank()) Attente.demarrer(this, attente, web.settings.userAgentString) else Attente.arreter(this)
     }
 
     /** fin de la réunion native : la page de la salle est prévenue */
     private val finVisio = object : BroadcastReceiver() {
         override fun onReceive(c: Context?, i: Intent?) {
+            Attente.arreter(this@MainActivity)
             web.evaluateJavascript("window.dispatchEvent(new Event('f365e-app-fin'))", null)
+        }
+    }
+
+    /** « Faire entrer » / « Refuser » touché dans l'alerte : la page « Ma salle visio » fait l'action */
+    private val actionSalle = object : BroadcastReceiver() {
+        override fun onReceive(c: Context?, i: Intent?) {
+            val a = i?.getStringExtra("a") ?: return
+            val id = i.getIntExtra("id", 0)
+            if (id <= 0 || (a != "admettre" && a != "refuser")) return
+            web.evaluateJavascript("window.f365eAppSalle && window.f365eAppSalle('$a', $id)", null)
         }
     }
 
@@ -159,6 +173,7 @@ class MainActivity : AppCompatActivity() {
             addAction(BroadcastEvent.Type.READY_TO_CLOSE.action)
         }
         LocalBroadcastManager.getInstance(this).registerReceiver(finVisio, filtre)
+        LocalBroadcastManager.getInstance(this).registerReceiver(actionSalle, IntentFilter(Attente.ACTION))
 
         if (savedInstanceState != null) {
             web.restoreState(savedInstanceState)
@@ -186,6 +201,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(finVisio)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(actionSalle)
+        Attente.arreter(this)
         web.destroy()
         super.onDestroy()
     }

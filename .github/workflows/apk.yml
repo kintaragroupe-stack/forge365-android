@@ -47,6 +47,9 @@ jobs:
           mkdir -p sortie
           cp app/build/outputs/apk/debug/*arm64-v8a*.apk sortie/FORGE365-test-${{ github.run_number }}-arm64.apk
           cp app/build/outputs/apk/debug/*armeabi-v7a*.apk sortie/FORGE365-test-${{ github.run_number }}-armv7.apk
+          # noms fixes : le lien « latest » donné à l'équipe pointe toujours vers la dernière version
+          cp sortie/FORGE365-test-${{ github.run_number }}-arm64.apk sortie/FORGE365.apk
+          cp sortie/FORGE365-test-${{ github.run_number }}-armv7.apk sortie/FORGE365-ancien-telephone.apk
           ls -la sortie
 
       - name: Dépôt dans Releases
@@ -55,7 +58,8 @@ jobs:
           tag_name: test-${{ github.run_number }}
           name: FORGE 365 — test ${{ github.run_number }}
           body: |
-            APK de test. Sur le téléphone : téléchargez le fichier « arm64 » (presque tous les téléphones récents),
-            ou « armv7 » si le premier refuse de s'installer.
-          prerelease: true
+            Sur le téléphone : téléchargez « FORGE365.apk » (téléphones récents).
+            S'il refuse de s'installer (ancien téléphone), prenez « FORGE365-ancien-telephone.apk ».
+          prerelease: false
+          make_latest: true
           files: sortie/*.apk

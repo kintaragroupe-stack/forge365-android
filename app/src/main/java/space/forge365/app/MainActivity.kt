@@ -37,6 +37,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.jitsi.meet.sdk.BroadcastEvent
 
@@ -106,6 +109,19 @@ class MainActivity : AppCompatActivity() {
         horsLigne = construireHorsLigne()
         racine.addView(horsLigne, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         setContentView(racine)
+
+        // Android 15 étale l'appli sous la barre du haut (heure, batterie) et sous les boutons du bas :
+        // on garde le site entre les deux, et au-dessus du clavier quand il s'ouvre.
+        racine.setBackgroundColor(Color.parseColor("#0B0B0B"))
+        WindowCompat.getInsetsController(window, racine).apply {
+            isAppearanceLightStatusBars = false // icônes blanches sur fond noir
+            isAppearanceLightNavigationBars = false
+        }
+        ViewCompat.setOnApplyWindowInsetsListener(racine) { v, insets ->
+            val b = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout() or WindowInsetsCompat.Type.ime())
+            v.setPadding(b.left, b.top, b.right, b.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
 
         CookieManager.getInstance().apply {
             setAcceptCookie(true)
